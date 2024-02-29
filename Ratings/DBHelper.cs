@@ -5,6 +5,7 @@ using System.Web;
 using System.Data.SqlClient;
 using Ratings.Models;
 using System.Data;
+using System.Web.Http;
 
 namespace Ratings
 {
@@ -36,9 +37,11 @@ namespace Ratings
                         command.Parameters.AddWithValue("@ReviewText", rating.ReviewText);
                         command.Parameters.AddWithValue("@CreatedOn", rating.CreatedOn);
                         command.Parameters.AddWithValue("@Title", rating.Title);
-                        command.Parameters.AddWithValue("@HelpfulCount", rating.HelpfulCount);
-                        command.Parameters.AddWithValue("@ReportCount", rating.ReportCount);
+                        command.Parameters.AddWithValue("@Likes", rating.Likes);
+                        command.Parameters.AddWithValue("@Dislikes", rating.Dislikes);
                         command.Parameters.AddWithValue("@isVerified", rating.IsVerified);
+                        command.Parameters.AddWithValue("@ReportCount", rating.ReportCount);
+
                         command.ExecuteNonQuery();
                     }
                     catch (Exception ex)
@@ -78,9 +81,10 @@ namespace Ratings
                                 ReviewText = reader["ReviewText"] is DBNull ? null : (string)reader["ReviewText"],
                                 CreatedOn = (DateTime)reader["CreatedOn"],
                                 Title = reader["Title"] is DBNull ? null : (string)reader["Title"],
-                                HelpfulCount = reader["HelpfulCount"] is DBNull ? 0 : (int)reader["HelpfulCount"],
-                                ReportCount = reader["ReportCount"] is DBNull ? 0 : (int)reader["ReportCount"],
-                                IsVerified = DBNull.Value.Equals(reader["isVerified"]) ? true : (bool)reader["isVerified"]
+                                Likes = reader["Likes"] is DBNull ? 0 : (int)reader["Likes"],
+                                Dislikes= reader["Dislikes"] is DBNull ? 0 : (int)reader["Dislikes"],
+                                IsVerified = DBNull.Value.Equals(reader["isVerified"]) ? true : (bool)reader["isVerified"],
+                                ReportCount = reader["ReportCount"] is DBNull ? 0 : (int)reader["ReportCount"]
                             });
 
 
@@ -119,9 +123,10 @@ namespace Ratings
                                 ReviewText = reader["ReviewText"] is DBNull ? null : (string)reader["ReviewText"],
                                 CreatedOn = (DateTime)reader["CreatedOn"],
                                 Title = reader["Title"] is DBNull ? null : (string)reader["Title"],
-                                HelpfulCount = reader["HelpfulCount"] is DBNull ? 0 : (int)reader["HelpfulCount"],
+                                Likes = reader["Likes"] is DBNull ? 0 : (int)reader["Likes"],
+                                Dislikes = reader["Dislikes"] is DBNull ? 0 : (int)reader["Dislikes"],
+                                IsVerified = DBNull.Value.Equals(reader["isVerified"]) ? true : (bool)reader["isVerified"],
                                 ReportCount = reader["ReportCount"] is DBNull ? 0 : (int)reader["ReportCount"],
-                                IsVerified = DBNull.Value.Equals(reader["isVerified"]) ? true : (bool)reader["isVerified"]
                             });
 
 
@@ -132,6 +137,9 @@ namespace Ratings
 
             return userRatings;
         }
+
+
+
 
         public List<RatingModel> GetUserRatingsByBranchId(int orgBranchId, int orgId)
         {
@@ -161,9 +169,11 @@ namespace Ratings
                                 ReviewText = reader["ReviewText"] is DBNull ? null : (string)reader["ReviewText"],
                                 CreatedOn = (DateTime)reader["CreatedOn"],
                                 Title = reader["Title"] is DBNull ? null : (string)reader["Title"],
-                                HelpfulCount = reader["HelpfulCount"] is DBNull ? 0 : (int)reader["HelpfulCount"],
-                                ReportCount = reader["ReportCount"] is DBNull ? 0 : (int)reader["ReportCount"],
-                                IsVerified = DBNull.Value.Equals(reader["isVerified"]) ? true : (bool)reader["isVerified"]
+                                Likes = reader["Likes"] is DBNull ? 0 : (int)reader["Likes"],
+                                Dislikes = reader["Dislikes"] is DBNull ? 0 : (int)reader["Dislikes"],
+                                IsVerified = DBNull.Value.Equals(reader["isVerified"]) ? true : (bool)reader["isVerified"],
+                                ReportCount = reader["ReportCount"] is DBNull ? 0 : (int)reader["ReportCount"]
+                                
                             });
 
                         }
@@ -173,5 +183,37 @@ namespace Ratings
 
             return userRatings;
         }
+
+        public void UpdateRatingCounts(int ratingId, string actionType)
+        {
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("UpdateRatingCount", connection))
+                {
+                    try
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@Id", ratingId);
+                        command.Parameters.AddWithValue("@ActionType", actionType);
+
+                        command.ExecuteNonQuery();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                }
+            }
+                
+
+            
+           
+            
+        }
+
     }
 }

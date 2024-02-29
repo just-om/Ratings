@@ -88,5 +88,76 @@ public class RatingReviewController : ApiController
         }
     }
 
+    [Route("api/likeRating")]
+    [HttpPut]
+    public IHttpActionResult LikeRating(int ratingId)
+    {
+
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            _service.UpdateRatingCounts(ratingId, "Likes");
+
+            return Ok("Rating added successfully");
+        }
+        catch (Exception ex)
+        {
+            return InternalServerError(ex);
+        }
+    }
+
+    [Route("api/dislikeRating")]
+    [HttpPut]
+    public IHttpActionResult DislikeRating(int ratingId)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _service.UpdateRatingCounts(ratingId, "Dislikes");
+
+            return Ok("Rating added successfully");
+        }
+        catch (Exception ex)
+        {
+            return InternalServerError(ex);
+        }
+    }
+
+    [Route("api/reportRating")]
+    [HttpPut]
+    public IHttpActionResult ReportRating( int ratingId)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _service.UpdateRatingCounts(ratingId, "Report");
+
+            return Ok("Rating added successfully");
+        }
+        catch (Exception ex)
+        {
+            return InternalServerError(ex);
+        }
+    }
+
+
+
+
 }
+
+
+
+
 

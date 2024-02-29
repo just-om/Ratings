@@ -31,12 +31,15 @@ namespace Ratings.Models
         [Required]
         public string Title { get; set; }
         [Required]
-        public int  HelpfulCount { get; set;}
+        public int  Likes { get; set;}
         [Required]
-        public int ReportCount { get; set; }
+        public int Dislikes{ get; set; }
 
         [Required]
         public bool IsVerified { get; set;}
+
+        [Required]
+        public int ReportCount { get; set;}
     }
 
 }
